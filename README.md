@@ -17,7 +17,7 @@ Name Detect is a client-side Minecraft mod that allows players to search for spe
 ### Steps:
 1. Download and install **Fabric Loader** from [FabricMC](https://fabricmc.net/use/).
 2. Install **Fabric API** from [Modrinth](https://modrinth.com/mod/fabric-api) or [CurseForge](https://www.curseforge.com/minecraft/mc-mods/fabric-api).
-3. Download the latest `name-detect-x.x.x.jar` from the [Releases](https://github.com/YOUR_GITHUB/name-detect/releases).
+3. Download the latest `namedetect-x.x.x.jar` from the [Releases](https://github.com/YOUR_GITHUB/name-detect/releases).
 4. Move the `.jar` file into your `.minecraft/mods/` folder.
 5. Launch Minecraft with the Fabric Loader profile and enjoy!
 
