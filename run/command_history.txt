@@ -1,0 +1,3 @@
+/detectname skep
+/detectname pl
+/detectname sk

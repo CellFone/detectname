@@ -1,0 +1,24 @@
+{
+	"schemaVersion": 1,
+	"id": "name_detect",
+	"version": "1.0.0",
+	"name": "Name Detect",
+	"description": "A client-side mod that detects names on a server.",
+	"authors": ["YourName"],
+	"contact": {
+		"homepage": "https://github.com/cellfone/namedetect",
+		"sources": "https://github.com/ellfone/namedetect"
+	},
+	"license": "MIT",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"github.cellfone.namedetect.NameDetectClient"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.15.7",
+		"minecraft": "1.21.1",
+		"fabric-api": ">=0.115.0+1.21.1"
+	}
+}
