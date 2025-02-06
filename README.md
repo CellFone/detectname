@@ -33,7 +33,7 @@ Name Detect is a client-side Minecraft mod that allows players to search for spe
 1. Clone the repository:
    ```sh
    git clone https://github.com/cellfone/detectname.git
-   cd namedetect-1.21.1
+   cd detectname
    ```
 2. Setup the development environment:
    ```sh
