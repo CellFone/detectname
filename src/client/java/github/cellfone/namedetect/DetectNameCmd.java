@@ -1,40 +1,53 @@
-package cc.aabss.eventutils.commands;
+package github.cellfone.namedetect;
 
-import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.text.Texts;
+import net.minecraft.text.Style;
+import net.minecraft.text.TextColor;
 
-import java.util.List;
+public class NameDetectClient implements ClientModInitializer {
+	@Override
+	public void onInitializeClient() {
+		registerCommand();
+	}
 
-public class DetectNameCmd {
-    public static void detectName(@NotNull CommandContext<FabricClientCommandSource> context, String searchTerm) {
-        final MinecraftClient client = context.getSource().getClient();
-        client.send(() -> {
-            if (client.player == null || client.player.networkHandler == null) {
-                context.getSource().sendFeedback(Text.literal("No players found!").formatted(Formatting.RED));
-                return;
-            }
+	private void registerCommand() {
+		ClientCommandManager.DISPATCHER.register(
+			ClientCommandManager.literal("detectname")
+				.then(ClientCommandManager.argument("word", StringArgumentType.string())
+					.executes(context -> {
+						String searchTerm = StringArgumentType.getString(context, "word").toLowerCase();
+						detectName(searchTerm);
+						return Command.SINGLE_SUCCESS;
+					})
+				)
+		);
+	}
 
-            final List<PlayerListEntry> players = client.player.networkHandler.getPlayerList();
-            final long count = players.stream()
-                    .map(entry -> entry.getProfile().getName().toLowerCase())
-                    .filter(name -> name.contains(searchTerm.toLowerCase()))
-                    .count();
+	private void detectName(String searchTerm) {
+		MinecraftClient client = MinecraftClient.getInstance();
+		if (client.player == null || client.player.networkHandler == null) return;
 
-            MutableText message = Text.literal("Found ")
-                    .append(Text.literal(String.valueOf(count)).formatted(Formatting.RED, Formatting.BOLD, Formatting.ITALIC))
-                    .append(Text.literal(" player(s) with '").formatted(Formatting.GRAY))
-                    .append(Text.literal(searchTerm).formatted(Formatting.WHITE))
-                    .append(Text.literal("' in their name.").formatted(Formatting.GRAY));
+		long count = client.player.networkHandler.getPlayerList().stream()
+				.map(PlayerListEntry::getProfile)
+				.map(profile -> profile.getName().toLowerCase())
+				.filter(name -> name.contains(searchTerm))
+				.count();
 
-            context.getSource().sendFeedback(message);
-        });
-    }
+		Text message = Texts.bracketed(Text.of("Found ")
+				.append(Text.of(String.valueOf(count)).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xFF5555))))
+				.append(Text.of(" player(s) with '"))
+				.append(Text.of(searchTerm).setStyle(Style.EMPTY.withItalic(true)))
+				.append(Text.of("' in their name.")));
+
+		client.player.sendMessage(message, false);
+	}
 }
